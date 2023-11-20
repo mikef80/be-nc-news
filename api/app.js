@@ -4,9 +4,9 @@ const { getEndpoints } = require("./controllers/endpoints-controllers");
 
 const app = express();
 
-app.get('/api', getEndpoints)
-
 app.get("/api/topics", getTopics);
+
+app.get('/api', getEndpoints)
 
 
 module.exports = app;
