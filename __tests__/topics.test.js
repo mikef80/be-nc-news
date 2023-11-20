@@ -13,7 +13,7 @@ beforeEach(() => seed({ topicData, userData, articleData, commentData }));
 afterAll(() => db.end());
 
 describe("/api/topics", () => {
-  it("GET: 200 sends an array to the client", () => {
+  it("GET:200 sends an array to the client", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -22,7 +22,7 @@ describe("/api/topics", () => {
       });
   });
 
-  it("GET: 200 return array is populated with objects that have the required properties - 'slug' and 'description'", () => {
+  it("GET:200 return array is populated with objects that have the required properties - 'slug' and 'description'", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -31,6 +31,15 @@ describe("/api/topics", () => {
           expect(topic).toHaveProperty("slug");
           expect(topic).toHaveProperty("description");
         });
+      });
+  });
+
+  it("GET:200 returns an array of the correct length", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.topics).toHaveLength(3);
       });
   });
 });
