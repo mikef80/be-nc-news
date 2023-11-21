@@ -27,7 +27,7 @@ describe("/api", () => {
       });
   });
 
-  it("GET:200 responds with an update reflection of the endpoints object", () => {
+  it("GET:200 responds with an updated reflection of the endpoints object", () => {
     return request(app)
       .get("/api")
       .expect(200)
