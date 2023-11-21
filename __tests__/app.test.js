@@ -47,6 +47,18 @@ describe("/api/topics", () => {
   });
 });
 
+describe.only("/api/articles/:article_id/comments", () => {
+  it("GET:200 returns an array of the correct length", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.comments)).toBe(true);
+        expect(body.comments).toHaveLength(11);
+      });
+  });
+});
+
 describe("/api/articles/:article_id", () => {
   it("GET:200 responds with correct article object", () => {
     return request(app)
@@ -101,7 +113,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.only("/api/articles", () => {
+describe("/api/articles", () => {
   it("GET:200 responds with an array of the correct length", () => {
     return request(app)
       .get("/api/articles")
