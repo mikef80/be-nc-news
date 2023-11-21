@@ -30,6 +30,22 @@ describe("/api/articles/:article_id", () => {
       });
   });
 
+  it("GET:200 response object has the correct properties", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toHaveProperty("author");
+        expect(body.article).toHaveProperty("title");
+        expect(body.article).toHaveProperty("article_id");
+        expect(body.article).toHaveProperty("body");
+        expect(body.article).toHaveProperty("topic");
+        expect(body.article).toHaveProperty("created_at");
+        expect(body.article).toHaveProperty("votes");
+        expect(body.article).toHaveProperty("article_img_url");
+      });
+  });
+
   it("GET:404 responds with 'not found' if provided with a valid article_id but doesn't exist", () => {
     return request(app)
       .get("/api/articles/14")
