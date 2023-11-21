@@ -18,15 +18,8 @@ describe("/api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
+        expect(typeof body.article).toBe("object");
         expect(body.article.article_id).toBe(1);
-        expect(typeof body.article.author).toBe("string");
-        expect(typeof body.article.title).toBe("string");
-        expect(typeof body.article.article_id).toBe("number");
-        expect(typeof body.article.body).toBe("string");
-        expect(typeof body.article.topic).toBe("string");
-        expect(new Date(body.article.created_at)).toBeInstanceOf(Date);
-        expect(typeof body.article.votes).toBe("number");
-        expect(typeof body.article.article_img_url).toBe("string");
       });
   });
 
@@ -43,6 +36,14 @@ describe("/api/articles/:article_id", () => {
         expect(body.article).toHaveProperty("created_at");
         expect(body.article).toHaveProperty("votes");
         expect(body.article).toHaveProperty("article_img_url");
+        expect(typeof body.article.author).toBe("string");
+        expect(typeof body.article.title).toBe("string");
+        expect(typeof body.article.article_id).toBe("number");
+        expect(typeof body.article.body).toBe("string");
+        expect(typeof body.article.topic).toBe("string");
+        expect(new Date(body.article.created_at)).toBeInstanceOf(Date);
+        expect(typeof body.article.votes).toBe("number");
+        expect(typeof body.article.article_img_url).toBe("string");
       });
   });
 
