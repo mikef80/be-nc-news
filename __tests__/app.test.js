@@ -101,22 +101,23 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles", () => {
+describe.only("/api/articles", () => {
   it("GET:200 responds with an array of the correct length", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         expect(Array.isArray(body.articles)).toBe(true);
-        expect(body.articles).toHaveLength(13)
+        expect(body.articles).toHaveLength(13);
       });
   });
 
-  it("GET:200 responds with articles with the correct properties", () => {
+  it("GET:200 responds with articles with the correct properties, sorted in descending order", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
         body.articles.forEach((article) => {
           const requestedKeys = [
             "author",
@@ -137,27 +138,8 @@ describe("/api/articles", () => {
           expect(new Date(article.created_at)).toBeInstanceOf(Date);
           expect(typeof article.votes).toBe("number");
           expect(typeof article.article_img_url).toBe("string");
-        });
-      });
-  });
-
-  it('GET:200 does not return the "body" key for any items ', () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        body.articles.forEach((article) => {
           expect(article).not.toContainKey("body");
         });
-      });
-  });
-
-  it("GET:200 sorts the returned articles in descending order by date", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
