@@ -47,7 +47,7 @@ describe("/api/topics", () => {
   });
 });
 
-describe.only("/api/articles/:article_id/comments", () => {
+describe("/api/articles/:article_id/comments", () => {
   it("GET:200 returns an array of the correct length", () => {
     return request(app)
       .get("/api/articles/1/comments")
