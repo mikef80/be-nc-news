@@ -47,6 +47,65 @@ describe("/api/topics", () => {
   });
 });
 
+describe("/api/articles/:article_id/comments", () => {
+  it("GET:200 returns an array of the correct length", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(Array.isArray(body.comments)).toBe(true);
+        expect(body.comments).toHaveLength(11);
+      });
+  });
+
+  it("GET:200 returns elements that each have the correct properties and sorted by most recent first", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        body.comments.forEach((comment, index) => {
+          expect(comment).toContainKeys([
+            "comment_id",
+            "votes",
+            "created_at",
+            "author",
+            "body",
+            "article_id",
+          ]);
+        });
+
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  it("GET:404 responds with 'not found' when passed an article_id that doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/14/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+
+  it("GET:400 responds with 'bad request' when passed an invalid article_id", () => {
+    return request(app)
+      .get("/api/articles/chickens/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+
+  it("GET:200 responds with an empty array if an article has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+});
+
 describe("/api/articles/:article_id", () => {
   it("GET:200 responds with correct article object", () => {
     return request(app)
@@ -101,7 +160,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.only("/api/articles", () => {
+describe("/api/articles", () => {
   it("GET:200 responds with an array of the correct length", () => {
     return request(app)
       .get("/api/articles")
