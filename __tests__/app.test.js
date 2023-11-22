@@ -105,11 +105,11 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  it.skip("POST:201 responds with the correct comment object", () => {
+  it("POST:201 responds with the correct comment object", () => {
     return request(app)
       .post("/api/articles/2/comments")
       .send({
-        username: "mikef80",
+        username: "lurker",
         body: "This is the greatest comment.  EVER.",
       })
       .set("Accept", "application/json")
@@ -117,9 +117,40 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(201)
       .then(({ body }) => {
         expect(body.comment).toMatchObject({
-          author: "mikef80",
+          author: "lurker",
           body: "This is the greatest comment.  EVER.",
+          votes: 0,
         });
+      });
+  });
+
+  it("POST:400 responds with 'bad request' if provided with invalid article_id", () => {
+    return request(app)
+      .post("/api/articles/chickens/comments")
+      .send({
+        username: "lurker",
+        body: "This is the greatest comment.  EVER.",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+
+  it("POST:404 responds with 'not found' if provided with a non-existent article_id", () => {
+    return request(app)
+      .post("/api/articles/27/comments")
+      .send({
+        username: "lurker",
+        body: "This is the greatest comment.  EVER.",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
       });
   });
 });
