@@ -96,12 +96,12 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  it("GET:404 responds with 'not found' if an article has no comments", () => {
+  it("GET:200 responds with an empty array if an article has no comments", () => {
     return request(app)
       .get("/api/articles/4/comments")
-      .expect(404)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("not found");
+        expect(body.comments).toEqual([]);
       });
   });
 });
