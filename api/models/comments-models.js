@@ -1,11 +1,9 @@
-const db = require('../../db/connection')
+const db = require("../../db/connection");
 
-exports.insertCommentByArticleId = ({ username, body }) => {
-  return {
-    body,
-    votes: 0,
-    author: username,
-    article_id: 9,
-    created_at: 1586179020000,
-  }
+exports.insertCommentByArticleId = (article_id, { username, body }) => {
+  return db.query(`
+  INSERT INTO comments
+    (article_id, author, body)
+  VALUES
+    ()`);
 };
