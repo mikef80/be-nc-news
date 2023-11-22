@@ -47,6 +47,26 @@ describe("/api/topics", () => {
   });
 });
 
+/* describe.only("/api/articles/:article_id/comments", () => {
+  it("POST:201 responds with the correct comment object", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({
+        username: "mikef80",
+        body: "This is the greatest comment.  EVER.",
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", 'application/json')
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          author: "mikef80",
+          body: "This is the greatest comment.  EVER.",
+        });
+      });
+  });
+}); */
+
 describe("/api/articles/:article_id", () => {
   it("GET:200 responds with correct article object", () => {
     return request(app)
@@ -101,7 +121,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.only("/api/articles", () => {
+describe("/api/articles", () => {
   it("GET:200 responds with an array of the correct length", () => {
     return request(app)
       .get("/api/articles")
