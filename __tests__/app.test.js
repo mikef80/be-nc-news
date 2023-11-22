@@ -95,6 +95,15 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("bad request");
       });
   });
+
+  it("GET:404 responds with 'not found' if an article has no comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
 });
 
 describe("/api/articles/:article_id", () => {
