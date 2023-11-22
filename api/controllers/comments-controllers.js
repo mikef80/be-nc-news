@@ -1,3 +1,6 @@
+const { insertCommentByArticleId } = require("../models/comments-models");
+
 exports.postCommentByArticleId = (req, res, next) => {
-  console.log(req.body);
+  const comment = req.body;
+  insertCommentByArticleId(comment);
 };

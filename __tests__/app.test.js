@@ -47,7 +47,7 @@ describe("/api/topics", () => {
   });
 });
 
-/* describe.only("/api/articles/:article_id/comments", () => {
+describe.skip("/api/articles/:article_id/comments", () => {
   it("POST:201 responds with the correct comment object", () => {
     return request(app)
       .post("/api/articles/2/comments")
@@ -56,7 +56,7 @@ describe("/api/topics", () => {
         body: "This is the greatest comment.  EVER.",
       })
       .set("Accept", "application/json")
-      .expect("Content-Type", 'application/json')
+      .expect("Content-Type", /json/)
       .expect(201)
       .then(({ body }) => {
         expect(body.comment).toMatchObject({
@@ -65,7 +65,7 @@ describe("/api/topics", () => {
         });
       });
   });
-}); */
+});
 
 describe("/api/articles/:article_id", () => {
   it("GET:200 responds with correct article object", () => {
