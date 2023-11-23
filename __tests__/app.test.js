@@ -408,6 +408,7 @@ describe("/api/users", () => {
         .expect(200)
         .then(({ body }) => {
           expect(Array.isArray(body.users)).toBe(true);
+          expect(body.users.length).toBe(4)
         });
     });
 
