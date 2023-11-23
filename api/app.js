@@ -7,7 +7,10 @@ const {
 } = require("./controllers/articles-controllers");
 const { getEndpoints } = require("./controllers/endpoints-controllers");
 const { handleCustomErrors, handlePSQLErrors } = require("./errors");
-const { getCommentsByArticleId } = require("./controllers/comments-controllers");
+const {
+  postCommentByArticleId,
+  getCommentsByArticleId,
+} = require("./controllers/comments-controllers");
 
 const app = express();
 
@@ -20,6 +23,7 @@ app.get("/api/articles", getAllArticles);
 app.get("/api", getEndpoints);
 
 app.patch('/api/articles/:article_id',patchArticle)
+app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);
