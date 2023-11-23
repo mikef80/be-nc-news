@@ -22,8 +22,9 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
 app.get("/api", getEndpoints);
 
-app.patch('/api/articles/:article_id',patchArticle)
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
+
+app.patch('/api/articles/:article_id', patchArticle)
 
 app.use(handleCustomErrors);
 app.use(handlePSQLErrors);

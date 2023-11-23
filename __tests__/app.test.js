@@ -200,7 +200,7 @@ describe("/api/articles/:article_id/comments", () => {
   });
 });
 
-describe.skip("/api/articles/:article_id", () => {
+describe("/api/articles/:article_id", () => {
   it("GET:200 responds with correct article object", () => {
     return request(app)
       .get("/api/articles/1")
@@ -253,13 +253,64 @@ describe.skip("/api/articles/:article_id", () => {
       });
   });
 
-  it.only("PATCH:200 returns the correct updated article", () => {
+  it("PATCH:200 returns the correct updated article and increments  the article votes property by the correct amount", () => {
     return request(app)
       .patch("/api/articles/8")
-      .send({ inc_votes: 1 })
+      .send({ inc_votes: 5 })
       .expect(200)
       .then(({ body }) => {
-        expect (body.article.article_id).toBe(8)
+        expect(body.article.article_id).toBe(8);
+        expect(body.article.votes).toBe(5);
+      });
+  });
+
+  it("PATCH:200 decrements the article votes when passed a negative number", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: -10 })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article.votes).toBe(90);
+      });
+  });
+
+  it("PATCH:400 returns 'bad request' if provided with an invalid article_id", () => {
+    return request(app)
+      .patch("/api/articles/chickens")
+      .send({ inc_votes: -10 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+
+  it("PATCH:404 responds with 'article not found' if provided with a valid article_id but doesn't exist", () => {
+    return request(app)
+      .patch("/api/articles/14")
+      .send({ inc_votes: -10 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("article not found");
+      });
+  });
+
+  it("PATCH:400 returns 'bad request' if passed a non-numeric value for 'inc_votes' property", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "test" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+
+  it("PATCH:400 returns 'bad request' if not passed a request body", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send()
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
       });
   });
 });
