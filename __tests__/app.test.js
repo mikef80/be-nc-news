@@ -401,13 +401,24 @@ describe("/api/comments/:comment_id", () => {
 });
 
 describe("/api/users", () => {
-  describe.skip("GET", () => {
-    it("200: returns an array", () => {
+  describe("GET", () => {
+    it("GET:200 returns an array", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
         .then(({ body }) => {
           expect(Array.isArray(body.users)).toBe(true);
+        });
+    });
+
+    it("GET:200 returns array of objects with the required properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          body.users.forEach((user) => {
+            expect(user).toContainKeys(["username", "name", "avatar_url"]);
+          });
         });
     });
   });
