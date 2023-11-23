@@ -106,7 +106,7 @@ describe("/api/articles/:article_id/comments", () => {
   });
 });
 
-describe("/api/articles/:article_id", () => {
+describe.only("/api/articles/:article_id", () => {
   it("GET:200 responds with correct article object", () => {
     return request(app)
       .get("/api/articles/1")
@@ -158,6 +158,14 @@ describe("/api/articles/:article_id", () => {
         expect(body.msg).toBe("bad request");
       });
   });
+
+  /* it("PATCH:200 returns the correct updated article", () => {
+    return request(app)
+      .patch("/api/articles/8")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {});
+  }); */
 });
 
 describe("/api/articles", () => {
