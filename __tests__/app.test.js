@@ -121,6 +121,7 @@ describe("/api/articles/:article_id/comments", () => {
           body: "This is the greatest comment.  EVER.",
           votes: 0,
         });
+        expect(body.comment).toHaveProperty("comment_id");
       });
   });
 
@@ -151,6 +152,50 @@ describe("/api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("not found");
+      });
+  });
+
+  it("POST:400 responds with 'bad request' if missing a field in the request body", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ body: "This comment shouldn't work" })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("bad request");
+      });
+  });
+
+  it("POST:404 responds with 'not found' if user doesn't exist", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({ username: "mikef80", body: "This comment also shouldn't work" })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("not found");
+      });
+  });
+
+  it("POST:201 responds with the correct comment object and ignores additional fields passed in", () => {
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send({
+        username: "lurker",
+        body: "I'm ignoring extra fields",
+        chickens: 7,
+      })
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          author: "lurker",
+          body: "I'm ignoring extra fields",
+        });
+        expect(body.comment).toHaveProperty("comment_id");
       });
   });
 });
