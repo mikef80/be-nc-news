@@ -2,6 +2,7 @@ const { selectArticleById } = require("../models/articles-models");
 const {
   insertCommentByArticleId,
   selectCommentsByArticleId,
+  removeCommentById,
 } = require("../models/comments-models");
 
 exports.postCommentByArticleId = (req, res, next) => {
@@ -26,6 +27,15 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .then((resolvedPromises) => {
       const comments = resolvedPromises[0];
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentById(comment_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 };
