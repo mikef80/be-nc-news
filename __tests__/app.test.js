@@ -358,6 +358,19 @@ describe("/api/articles", () => {
   });
 });
 
+describe("/api/users", () => {
+  describe.skip("GET", () => {
+    it("200: returns an array", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.users)).toBe(true);
+        });
+    });
+  });
+});
+
 describe("/api", () => {
   it("GET:200 responds with an object", () => {
     return request(app)
