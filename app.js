@@ -1,17 +1,17 @@
 const express = require("express");
-const { getTopics } = require("./controllers/topics-controllers");
+const { getTopics } = require("./api/controllers/topics-controllers");
 const {
   getArticleById,
   getAllArticles,
   patchArticle,
-} = require("./controllers/articles-controllers");
-const { getEndpoints } = require("./controllers/endpoints-controllers");
-const { handleCustomErrors, handlePSQLErrors } = require("./errors");
+} = require("./api/controllers/articles-controllers");
+const { getEndpoints } = require("./api/controllers/endpoints-controllers");
+const { handleCustomErrors, handlePSQLErrors } = require("./api/errors");
 const {
   postCommentByArticleId,
   getCommentsByArticleId,
   deleteCommentById,
-} = require("./controllers/comments-controllers");
+} = require("./api/controllers/comments-controllers");
 
 const app = express();
 

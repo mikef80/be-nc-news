@@ -1,6 +1,6 @@
 require("jest-sorted");
 require("jest-extended");
-const app = require("../api/app");
+const app = require("../app");
 const request = require("supertest");
 const {
   topicData,
