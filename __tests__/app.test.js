@@ -371,6 +371,28 @@ describe("/api/articles", () => {
           });
         });
     });
+    describe("OPTIONAL QUERY", () => {
+      it("GET:200 should take an optional 'topic' query which filters the resulting articles by the topic value", () => {
+        return request(app)
+          .get("/api/articles?topic=cats")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toHaveLength(1);
+            body.articles.forEach((article) => {
+              expect(article.topic).toBe("cats");
+            });
+          });
+      });
+
+      it("GET:404 should return 'not found' if provided with a topic that doesn't exist in the database", () => {
+        return request(app)
+          .get("/api/articles?topic=dogs")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("topic not found");
+          });
+      });
+    });
   });
 });
 
@@ -408,7 +430,7 @@ describe("/api/users", () => {
         .expect(200)
         .then(({ body }) => {
           expect(Array.isArray(body.users)).toBe(true);
-          expect(body.users.length).toBe(4)
+          expect(body.users.length).toBe(4);
         });
     });
 
