@@ -400,7 +400,7 @@ describe("/api/comments/:comment_id", () => {
   });
 });
 
-describe.only("/api/users", () => {
+describe("/api/users", () => {
   describe("GET", () => {
     it("GET:200 returns an array", () => {
       return request(app)
