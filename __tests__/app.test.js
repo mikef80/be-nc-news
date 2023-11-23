@@ -297,6 +297,19 @@ describe("/api/articles", () => {
   });
 });
 
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE comments", () => {
+    it.skip("DELETE:204 responds with a 204 status and no response body when passed a valid comment_id", () => {
+      return request(app)
+        .delete("/api/comments/16")
+        .expect(204)
+        .then((response) => {
+          console.log(response);
+        });
+    });
+  });
+});
+
 describe("/api", () => {
   it("GET:200 responds with an object", () => {
     return request(app)
