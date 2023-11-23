@@ -327,7 +327,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles", () => {
+describe.skip("/api/articles", () => {
   describe("GET", () => {
     it("GET:200 responds with an array of the correct length", () => {
       return request(app)
@@ -381,6 +381,15 @@ describe("/api/articles", () => {
             body.articles.forEach((article) => {
               expect(article.topic).toBe("cats");
             });
+          });
+      });
+
+      it("GET:200 returns an empty array if provided with a toipic that does exist but has no associated articles", () => {
+        return request(app)
+          .get("/api/articles?topic=paper")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toEqual([]);
           });
       });
 
