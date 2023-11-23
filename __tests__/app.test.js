@@ -78,12 +78,12 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  it("GET:404 responds with 'not found' when passed an article_id that doesn't exist", () => {
+  it("GET:404 responds with 'article not found' when passed an article_id that doesn't exist", () => {
     return request(app)
       .get("/api/articles/14/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("not found");
+        expect(body.msg).toBe("article not found");
       });
   });
 
@@ -140,7 +140,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  it("POST:404 responds with 'not found' if provided with a non-existent article_id", () => {
+  it("POST:404 responds with 'article not found' if provided with a non-existent article_id", () => {
     return request(app)
       .post("/api/articles/27/comments")
       .send({
@@ -151,7 +151,7 @@ describe("/api/articles/:article_id/comments", () => {
       .expect("Content-Type", /json/)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("not found");
+        expect(body.msg).toBe("article not found");
       });
   });
 
@@ -167,7 +167,7 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 
-  it("POST:404 responds with 'not found' if user doesn't exist", () => {
+  it("POST:404 responds with 'user not found' if user doesn't exist", () => {
     return request(app)
       .post("/api/articles/2/comments")
       .send({ username: "mikef80", body: "This comment also shouldn't work" })
@@ -175,7 +175,7 @@ describe("/api/articles/:article_id/comments", () => {
       .expect("Content-Type", /json/)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("not found");
+        expect(body.msg).toBe("user not found");
       });
   });
 
@@ -235,12 +235,12 @@ describe("/api/articles/:article_id", () => {
       });
   });
 
-  it("GET:404 responds with 'not found' if provided with a valid article_id but doesn't exist", () => {
+  it("GET:404 responds with 'article not found' if provided with a valid article_id but doesn't exist", () => {
     return request(app)
       .get("/api/articles/14")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("not found");
+        expect(body.msg).toBe("article not found");
       });
   });
 
