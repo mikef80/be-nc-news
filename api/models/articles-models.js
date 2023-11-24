@@ -10,18 +10,12 @@ exports.selectArticleById = (article_id) => {
   GROUP BY a.article_id
   ORDER BY a.created_at DESC;`;
 
-  return (
-    db
-      // .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
-
-      .query(sql, [article_id])
-      .then(({ rows }) => {
-        if (!rows.length) {
-          return Promise.reject({ status: 404, msg: "article not found" });
-        }
-        return rows[0];
-      })
-  );
+  return db.query(sql, [article_id]).then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "article not found" });
+    }
+    return rows[0];
+  });
 };
 
 exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
@@ -30,6 +24,7 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
     sort_by = "created_at";
   }
 
+  //define acceptable input values
   const acceptedSortByValues = [
     "article_id",
     "title",
@@ -38,9 +33,9 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
     "created_at",
     "votes",
   ];
-
   const acceptedOrderValues = ["desc", "asc"];
 
+  // sql statement construction
   let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
   FROM articles a
   LEFT JOIN comments c
@@ -63,6 +58,7 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
 
   sql += format(` ORDER BY %I `, sort_by);
   sql += order;
+  // end of sql statement construction
 
   return db.query(sql).then((results) => {
     if (!results.rows.length) {
