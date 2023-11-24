@@ -416,7 +416,7 @@ describe("/api/articles", () => {
     });
   });
 
-  describe.only("ADVANCED", () => {
+  describe("ADVANCED", () => {
     it("GET:200 accepts an optional 'sort_by' query which returns the result sorted by the selected column", () => {
       return request(app)
         .get("/api/articles?sort_by=votes")
@@ -445,6 +445,37 @@ describe("/api/articles", () => {
           expect(body.articles).toBeSortedBy("created_at", {
             descending: true,
           });
+        });
+    });
+
+    it("GET:200 accepts an optional 'order' query which returned the results sorted accordingly", () => {
+      return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: false,
+          });
+        });
+    });
+
+    it("GET:200 returns an array sorted by the 'sort_by' query and ordered by the 'order' query", () => {
+      return request(app)
+        .get("/api/articles?order=asc&sort_by=article_id")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("article_id", {
+            descending: false,
+          });
+        });
+    });
+
+    it("GET:400 returns a 'bad request' error when passed an invalid 'order' argument", () => {
+      return request(app)
+        .get("/api/articles?order=chickens")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
         });
     });
   });

@@ -24,7 +24,13 @@ exports.selectArticleById = (article_id) => {
   );
 };
 
-exports.selectAllArticles = (topic, sort_by) => {
+exports.selectAllArticles = (topic, sort_by = "created_at", order = "DESC") => {
+  if (!sort_by.length) {
+    sort_by = "created_at";
+  }
+
+  order = order.toUpperCase();
+
   const acceptedSortByValues = [
     "article_id",
     "title",
@@ -33,6 +39,8 @@ exports.selectAllArticles = (topic, sort_by) => {
     "created_at",
     "votes",
   ];
+
+  const acceptedOrderValues = ["DESC", "ASC"];
 
   let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
   FROM articles a
@@ -45,15 +53,20 @@ exports.selectAllArticles = (topic, sort_by) => {
 
   sql += ` GROUP BY a.article_id`;
 
-  if (sort_by.length > 0 && !acceptedSortByValues.includes(sort_by)) {
+  if (
+    (sort_by &&
+      sort_by.length > 0 &&
+      !acceptedSortByValues.includes(sort_by)) ||
+    (order && order.length > 0 && !acceptedOrderValues.includes(order))
+  ) {
     return Promise.reject({ status: 400, msg: "bad request" });
-  } else if (sort_by.length === 0) {
+  } else if (sort_by && sort_by.length === 0) {
     sort_by = "created_at";
   }
 
-  sql += format(` ORDER BY %I DESC;`, sort_by);
+  sql += format(` ORDER BY %I `, sort_by);
 
-  return db.query(sql).then((results) => {
+  return db.query(sql + order).then((results) => {
     if (!results.rows.length) {
       if (topic) {
         return [];
