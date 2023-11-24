@@ -261,6 +261,15 @@ describe("/api/articles/:article_id", () => {
           expect(body.msg).toBe("bad request");
         });
     });
+
+    it("GET:200 includes 'comment_count' in the article body", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toHaveProperty("comment_count");
+        });
+    });
   });
 
   describe("PATCH", () => {
@@ -356,6 +365,7 @@ describe("/api/articles", () => {
               "created_at",
               "votes",
               "article_img_url",
+              "comment_count",
             ];
 
             expect(article).toContainKeys(requestedKeys);
@@ -367,6 +377,7 @@ describe("/api/articles", () => {
             expect(new Date(article.created_at)).toBeInstanceOf(Date);
             expect(typeof article.votes).toBe("number");
             expect(typeof article.article_img_url).toBe("string");
+            expect(typeof article.comment_count).toBe("number");
             expect(article).not.toContainKey("body");
           });
         });

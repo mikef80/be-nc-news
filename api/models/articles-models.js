@@ -2,14 +2,26 @@ const db = require("../../db/connection");
 const format = require("pg-format");
 
 exports.selectArticleById = (article_id) => {
-  return db
-    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
-    .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({ status: 404, msg: "article not found" });
-      }
-      return rows[0];
-    });
+  let sql = `SELECT a.article_id,a.body, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
+  FROM articles a
+  LEFT JOIN comments c
+  ON c.article_id = a.article_id
+  WHERE a.article_id = $1
+  GROUP BY a.article_id
+  ORDER BY a.created_at DESC;`;
+
+  return (
+    db
+      // .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+
+      .query(sql, [article_id])
+      .then(({ rows }) => {
+        if (!rows.length) {
+          return Promise.reject({ status: 404, msg: "article not found" });
+        }
+        return rows[0];
+      })
+  );
 };
 
 exports.selectAllArticles = (topic) => {
