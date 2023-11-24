@@ -400,7 +400,6 @@ describe("/api/articles", () => {
           .get("/api/articles?topic=paper")
           .expect(200)
           .then(({ body }) => {
-            // console.log(body);
             expect(body.articles).toEqual([]);
           });
       });
@@ -502,6 +501,28 @@ describe("/api/comments/:comment_id", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("comment not found");
+        });
+    });
+  });
+});
+
+describe("/api/users/:username", () => {
+  describe("GET", () => {
+    it("GET:200 returns a user object which has the required properties", () => {
+      return request(app)
+        .get("/api/users/lurker")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.user).toContainKeys(["username", "avatar_url", "name"]);
+        });
+    });
+
+    it("GET:404 returns 'not found' if passed a non-existent username", () => {
+      return request(app)
+        .get("/api/users/chicken")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("user not found");
         });
     });
   });
