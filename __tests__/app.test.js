@@ -273,7 +273,7 @@ describe("/api/articles/:article_id", () => {
   });
 
   describe("PATCH", () => {
-    it("PATCH:200 returns the correct updated article and increments  the article votes property by the correct amount", () => {
+    it("PATCH:200 returns the correct updated article and increments the article votes property by the correct amount", () => {
       return request(app)
         .patch("/api/articles/8")
         .send({ inc_votes: 5 })
@@ -501,6 +501,67 @@ describe("/api/comments/:comment_id", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("comment not found");
+        });
+    });
+  });
+
+  describe("ADVANCED", () => {
+    it("PATCH:200 responds with the relevant comment object", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: 14 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment.comment_id).toBe(1);
+          expect(body.comment).toContainKeys([
+            "comment_id",
+            "body",
+            "article_id",
+            "author",
+            "votes",
+            "created_at",
+          ]);
+          expect(body.comment.votes).toBe(30);
+        });
+    });
+
+    it("PATCH:200 decrements the articles votes by the correct amount", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: -14 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment.votes).toBe(2);
+        });
+    });
+
+    it("PATCH:400 returns 'bad request' if passed an invalid comment_id", () => {
+      return request(app)
+        .patch("/api/comments/chicken")
+        .send({ inc_votes: 12 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+
+    it("PATCH:400 returns 'bad request' if passed an invalid 'inc_votes' value", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: "chicken" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+
+    it("PATCH:404 returns 'not found' if passed a non-existent comment_id", () => {
+      return request(app)
+        .patch("/api/comments/462")
+        .send({ inc_votes: 12 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("not found");
         });
     });
   });
