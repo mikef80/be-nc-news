@@ -24,12 +24,11 @@ exports.selectArticleById = (article_id) => {
   );
 };
 
-exports.selectAllArticles = (topic, sort_by = "created_at", order = "DESC") => {
+exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
+  // deal with someone adding ?sort_by= and adding no value
   if (!sort_by.length) {
     sort_by = "created_at";
   }
-
-  order = order.toUpperCase();
 
   const acceptedSortByValues = [
     "article_id",
@@ -40,7 +39,7 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "DESC") => {
     "votes",
   ];
 
-  const acceptedOrderValues = ["DESC", "ASC"];
+  const acceptedOrderValues = ["desc", "asc"];
 
   let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
   FROM articles a
@@ -63,8 +62,9 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "DESC") => {
   }
 
   sql += format(` ORDER BY %I `, sort_by);
+  sql += order;
 
-  return db.query(sql + order).then((results) => {
+  return db.query(sql).then((results) => {
     if (!results.rows.length) {
       if (topic) {
         return [];
