@@ -24,7 +24,7 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
     sort_by = "created_at";
   }
 
-  //define acceptable input values
+  // define acceptable input values
   const acceptedSortByValues = [
     "article_id",
     "title",
@@ -34,6 +34,16 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
     "votes",
   ];
   const acceptedOrderValues = ["desc", "asc"];
+
+  // return error if unacceptable sort_by or order values passed
+  if (
+    (sort_by &&
+      sort_by.length > 0 &&
+      !acceptedSortByValues.includes(sort_by)) ||
+    (order && order.length > 0 && !acceptedOrderValues.includes(order))
+  ) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
 
   // sql statement construction
   let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
@@ -45,19 +55,8 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
     sql += format(` WHERE a.topic = %L`, topic);
   }
 
-  sql += ` GROUP BY a.article_id`;
+  sql += format(` GROUP BY a.article_id ORDER BY %I `, sort_by) + order;
 
-  if (
-    (sort_by &&
-      sort_by.length > 0 &&
-      !acceptedSortByValues.includes(sort_by)) ||
-    (order && order.length > 0 && !acceptedOrderValues.includes(order))
-  ) {
-    return Promise.reject({ status: 400, msg: "bad request" });
-  }
-
-  sql += format(` ORDER BY %I `, sort_by);
-  sql += order;
   // end of sql statement construction
 
   return db.query(sql).then((results) => {
