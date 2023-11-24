@@ -24,7 +24,23 @@ exports.selectArticleById = (article_id) => {
   );
 };
 
-exports.selectAllArticles = (topic) => {
+exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
+  // deal with someone adding ?sort_by= and adding no value
+  if (!sort_by.length) {
+    sort_by = "created_at";
+  }
+
+  const acceptedSortByValues = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "votes",
+  ];
+
+  const acceptedOrderValues = ["desc", "asc"];
+
   let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
   FROM articles a
   LEFT JOIN comments c
@@ -34,8 +50,19 @@ exports.selectAllArticles = (topic) => {
     sql += format(` WHERE a.topic = %L`, topic);
   }
 
-  sql += ` GROUP BY a.article_id
-  ORDER BY a.created_at DESC;`;
+  sql += ` GROUP BY a.article_id`;
+
+  if (
+    (sort_by &&
+      sort_by.length > 0 &&
+      !acceptedSortByValues.includes(sort_by)) ||
+    (order && order.length > 0 && !acceptedOrderValues.includes(order))
+  ) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  }
+
+  sql += format(` ORDER BY %I `, sort_by);
+  sql += order;
 
   return db.query(sql).then((results) => {
     if (!results.rows.length) {
