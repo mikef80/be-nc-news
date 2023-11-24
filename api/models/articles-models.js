@@ -60,8 +60,6 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "DESC") => {
     (order && order.length > 0 && !acceptedOrderValues.includes(order))
   ) {
     return Promise.reject({ status: 400, msg: "bad request" });
-  } else if (sort_by && sort_by.length === 0) {
-    sort_by = "created_at";
   }
 
   sql += format(` ORDER BY %I `, sort_by);
