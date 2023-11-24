@@ -26,16 +26,12 @@ exports.selectAllArticles = (topic) => {
   ORDER BY a.created_at DESC;`;
 
   return db.query(sql).then((results) => {
-    // console.log(results);
     if (!results.rows.length) {
       if (topic) {
         return [];
-        /* return Promise.reject({ status: 404, msg: "topic not found" }); */
-      } 
-
+      }
       return Promise.reject({ status: 404, msg: "articles not found" });
     }
-
     return results.rows;
   });
 };

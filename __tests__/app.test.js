@@ -327,7 +327,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.skip("/api/articles", () => {
+describe("/api/articles", () => {
   describe("GET", () => {
     it("GET:200 responds with an array of the correct length", () => {
       return request(app)
@@ -384,16 +384,17 @@ describe.skip("/api/articles", () => {
           });
       });
 
-      it("GET:200 returns an empty array if provided with a toipic that does exist but has no associated articles", () => {
+      it("GET:200 returns an empty array if provided with a topic that does exist but has no associated articles", () => {
         return request(app)
           .get("/api/articles?topic=paper")
           .expect(200)
           .then(({ body }) => {
+            // console.log(body);
             expect(body.articles).toEqual([]);
           });
       });
 
-      it("GET:404 should return 'not found' if provided with a topic that doesn't exist in the database", () => {
+      it("GET:404 should return 'topic not found' if provided with a topic that doesn't exist in the database", () => {
         return request(app)
           .get("/api/articles?topic=dogs")
           .expect(404)
