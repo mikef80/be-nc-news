@@ -43,7 +43,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": [],
+    "queries": ["sort_by (column name)","order (asc/desc)"],
     "exampleRequest": {},
     "exampleResponse": {
       "articles": [
