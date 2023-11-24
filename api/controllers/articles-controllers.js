@@ -3,6 +3,7 @@ const {
   updateArticle,
 } = require("../models/articles-models");
 const { selectArticleById } = require("../models/articles-models");
+const { checkTopicExists } = require("../models/topics-models");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -14,9 +15,26 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  selectAllArticles()
-    .then((articles) => {
-      res.status(200).send({ articles });
+  const { topic } = req.query;
+
+  const articlesPromises = [selectAllArticles(topic)];
+
+  if (topic) {
+    articlesPromises.push(checkTopicExists(topic));
+  }
+
+  Promise.all(articlesPromises)
+    .then((resolvedPromises) => {
+      const returnedArticles = resolvedPromises[0];
+      const returnedTopics = resolvedPromises[1];
+
+      if (returnedArticles.length) {
+        res.status(200).send({ articles: returnedArticles });
+      } else if (returnedTopics.length) {
+        res.status(200).send({ articles: [] });
+      } else {
+        res.status(404).send({ msg: "topic not found" });
+      }
     })
     .catch(next);
 };
