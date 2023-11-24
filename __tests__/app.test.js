@@ -545,6 +545,16 @@ describe("/api/comments/:comment_id", () => {
         });
     });
 
+    it("PATCH:400 returns 'bad request' if passed an invalid 'inc_votes' value", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: "chicken" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+
     it("PATCH:404 returns 'not found' if passed a non-existent comment_id", () => {
       return request(app)
         .patch("/api/comments/462")
