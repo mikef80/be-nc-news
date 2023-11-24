@@ -24,7 +24,16 @@ exports.selectArticleById = (article_id) => {
   );
 };
 
-exports.selectAllArticles = (topic) => {
+exports.selectAllArticles = (topic, sort_by) => {
+  const acceptedSortByValues = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "votes",
+  ];
+
   let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
   FROM articles a
   LEFT JOIN comments c
@@ -34,8 +43,15 @@ exports.selectAllArticles = (topic) => {
     sql += format(` WHERE a.topic = %L`, topic);
   }
 
-  sql += ` GROUP BY a.article_id
-  ORDER BY a.created_at DESC;`;
+  sql += ` GROUP BY a.article_id`;
+
+  if (sort_by.length > 0 && !acceptedSortByValues.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "bad request" });
+  } else if (sort_by.length === 0) {
+    sort_by = "created_at";
+  }
+
+  sql += format(` ORDER BY %I DESC;`, sort_by);
 
   return db.query(sql).then((results) => {
     if (!results.rows.length) {

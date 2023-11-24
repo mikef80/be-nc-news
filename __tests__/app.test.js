@@ -348,7 +348,7 @@ describe("/api/articles", () => {
         });
     });
 
-    it("GET:200 responds with articles with the correct properties, sorted in descending order", () => {
+    it("GET:200 responds with articles with the correct properties, sorted by 'created_at' in descending order", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
@@ -413,6 +413,39 @@ describe("/api/articles", () => {
             expect(body.msg).toBe("topic not found");
           });
       });
+    });
+  });
+
+  describe.only("ADVANCED", () => {
+    it("GET:200 accepts an optional 'sort_by' query which returns the result sorted by the selected column", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("votes", {
+            descending: true,
+          });
+        });
+    });
+
+    it("GET:400 returns a 'bad request' error when passed an invalid 'sort_by' argument", () => {
+      return request(app)
+        .get("/api/articles?sort_by=chickens")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+
+    it("GET:200 returns a query sorted by the default 'created_at' when passed an empty 'sort_by' argument", () => {
+      return request(app)
+        .get("/api/articles?sort_by=")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
     });
   });
 });
