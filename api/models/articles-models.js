@@ -46,7 +46,7 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
   }
 
   // sql statement construction
-  let sql = `SELECT a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
+  let sql = `SELECT a.article_id, a.title, a.topic,a.body, a.author, a.created_at, a.votes, a.article_img_url, CAST(COUNT(c.comment_id) AS INT) AS comment_count 
   FROM articles a
   LEFT JOIN comments c
   ON c.article_id = a.article_id`;
