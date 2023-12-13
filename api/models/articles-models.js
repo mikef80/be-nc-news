@@ -32,6 +32,7 @@ exports.selectAllArticles = (topic, sort_by = "created_at", order = "desc") => {
     "author",
     "created_at",
     "votes",
+    "comment_count",
   ];
   const acceptedOrderValues = ["desc", "asc"];
 
