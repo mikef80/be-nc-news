@@ -44,7 +44,7 @@
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": [
-      "sort_by (column name)",
+      "sort_by (article_id,title,topic,author,created_at,votes)",
       "order (asc/desc)"
     ],
     "exampleRequest": {},
