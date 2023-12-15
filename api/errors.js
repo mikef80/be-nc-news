@@ -1,5 +1,6 @@
 exports.handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
+    console.log('error here1');
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
@@ -20,6 +21,6 @@ exports.handlePSQLErrors = (err, req, res, next) => {
 };
 
 exports.handleServerErrors = (err, req, res, next) => {
-  console.log('error here');
+  console.log('error here3');
   res.status(500).send({ msg: "Internal Server Error" });
 };
